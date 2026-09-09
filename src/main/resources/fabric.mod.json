@@ -1,15 +1,15 @@
 {
   "schemaVersion": 1,
-  "id": "fastcontroller",
+  "id": "directtouch",
   "version": "${version}",
-  "name": "FastController",
+  "name": "DirectTouch",
   "description": "",
   "authors": [
     "AndreasMelone"
   ],
   "contact": {},
   "license": "All-Rights-Reserved",
-  "icon": "assets/fastcontroller/icon.png",
+  "icon": "assets/directtouch/icon.png",
   "environment": "client",
   "entrypoints": {
     "client": [
@@ -17,7 +17,7 @@
     ]
   },
   "mixins": [
-    "fastcontroller.mixins.json"
+    "directtouch.mixins.json"
   ],
   "depends": {
     "fabricloader": ">=${loader_version}",

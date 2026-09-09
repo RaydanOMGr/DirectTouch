@@ -1,5 +1,5 @@
-#ifndef FASTCONTROLLER_ENVIRON_H
-#define FASTCONTROLLER_ENVIRON_H
+#ifndef DIRECTTOUCH_ENVIRON_H
+#define DIRECTTOUCH_ENVIRON_H
 
 #include <jni.h>
 
@@ -23,4 +23,4 @@ struct directtouch_environ_s {
 };
 extern struct directtouch_environ_s *directtouch_environ;
 
-#endif //FASTCONTROLLER_ENVIRON_H
+#endif //DIRECTTOUCH_ENVIRON_H
