@@ -1,0 +1,26 @@
+{
+  "schemaVersion": 1,
+  "id": "fastcontroller",
+  "version": "${version}",
+  "name": "FastController",
+  "description": "",
+  "authors": [
+    "AndreasMelone"
+  ],
+  "contact": {},
+  "license": "All-Rights-Reserved",
+  "icon": "assets/fastcontroller/icon.png",
+  "environment": "client",
+  "entrypoints": {
+    "client": [
+      "me.andreasmelone.directtouch.DirectTouchClient"
+    ]
+  },
+  "mixins": [
+    "fastcontroller.mixins.json"
+  ],
+  "depends": {
+    "fabricloader": ">=${loader_version}",
+    "minecraft": "*"
+  }
+}
