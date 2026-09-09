@@ -4,7 +4,7 @@ import java.util.zip.ZipInputStream
 plugins {
     id 'net.fabricmc.fabric-loom' version '1.17-SNAPSHOT'
     id 'maven-publish'
-    id 'com.android.application' version '9.2.1' apply false
+    id 'com.android.application' version '9.1.0' apply false
 }
 
 version = project.mod_version
@@ -60,7 +60,7 @@ dependencies {
             try(ZipInputStream inStream = new ZipInputStream(new FileInputStream(jar))) {
                 ZipEntry entry
                 while((entry = inStream.getNextEntry()) != null) {
-                    def entryNameSplit = entry.name.split(File.separator)
+                    def entryNameSplit = entry.name.split("/")
                     def entryName = entryNameSplit[entryNameSplit.length - 1]
 
                     if(blacklist.contains(entryName) || !entry.name.endsWith(".jar")) continue
