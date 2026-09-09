@@ -5,50 +5,27 @@ import static net.kdt.pojavlaunch.Tools.dpToPx;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.res.Resources;
-import android.graphics.RectF;
-import android.os.Build;
-import android.os.Vibrator;
 import android.util.Log;
-import android.view.ActionMode;
 import android.view.Gravity;
-import android.view.KeyEvent;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.MotionEvent;
-import android.view.SearchEvent;
 import android.view.View;
 import android.view.Window;
-import android.view.WindowManager;
-import android.view.accessibility.AccessibilityEvent;
 import android.widget.FrameLayout;
 
 import androidx.annotation.Keep;
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.core.content.ContextCompat;
-import androidx.drawerlayout.widget.DrawerLayout;
 
 import net.kdt.pojavlaunch.MainActivity;
-import net.kdt.pojavlaunch.MinecraftGLSurface;
 import net.kdt.pojavlaunch.Tools;
-import net.kdt.pojavlaunch.customcontrols.ControlLayout;
 import net.kdt.pojavlaunch.prefs.LauncherPreferences;
 
 import java.lang.reflect.Field;
-import java.nio.ByteBuffer;
-import java.util.Queue;
-import java.util.Set;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 
-import me.andreasmelone.directtouch.pojav.keycode.KeycodeExecutor;
 import me.andreasmelone.directtouch.pojav.keycode.MojoKeycodeExecutor;
+import me.andreasmelone.directtouch.pojav.keycode.KeycodeExecutor;
+import me.andreasmelone.directtouch.pojav.keycode.LegacyMojoKeycodeExecutor;
 import me.andreasmelone.directtouch.pojav.keycode.StandardPojavKeycodeExecutor;
-import top.fifthlight.touchcontroller.proxy.client.LauncherProxyClient;
-import top.fifthlight.touchcontroller.proxy.client.MessageTransport;
-import top.fifthlight.touchcontroller.proxy.client.PlatformCapability;
-import top.fifthlight.touchcontroller.proxy.message.InitializeMessage;
-import top.fifthlight.touchcontroller.proxy.message.ProxyMessage;
 
 @Keep
 @SuppressWarnings("unused")
@@ -71,17 +48,11 @@ public class DirectTouchAndroid {
             Resources res = activity.getResources();
             String packageName = activity.getPackageName();
 
-            KEYCODE_EXECUTOR = new MojoKeycodeExecutor();
-            if (!KEYCODE_EXECUTOR.init()) {
-                KEYCODE_EXECUTOR = new StandardPojavKeycodeExecutor();
-                if (!KEYCODE_EXECUTOR.init()) {
-                    KEYCODE_EXECUTOR = new KeycodeExecutor.NoopFallback();
-                }
-            }
+            selectKeycodeExecutor();
             Log.v("DirectTouch", "Using " + KEYCODE_EXECUTOR.getName() + " keycode executor!");
 
             FrameLayout container = activity.findViewById(getId(activity, "content_frame"));
-            ControlLayout layout = container.findViewById(getId(activity, "main_control_layout"));
+            FrameLayout layout = container.findViewById(getId(activity, "main_control_layout"));
             View glSurface = container.findViewById(getId(activity, "main_game_render_view"));
 
             TouchControllerInputView touchControllerInputView = new TouchControllerInputView(activity);
@@ -116,6 +87,20 @@ public class DirectTouchAndroid {
         } catch (Exception e) {
             Log.e("PojIntegr", "Something went wrong", e);
         }
+    }
+
+    private static void selectKeycodeExecutor() {
+        KEYCODE_EXECUTOR = new MojoKeycodeExecutor();
+        if(KEYCODE_EXECUTOR.init()) return;
+
+        KEYCODE_EXECUTOR = new LegacyMojoKeycodeExecutor();
+        if(KEYCODE_EXECUTOR.init()) return;
+
+        KEYCODE_EXECUTOR = new StandardPojavKeycodeExecutor();
+        if(KEYCODE_EXECUTOR.init()) return;
+
+        KEYCODE_EXECUTOR = new KeycodeExecutor.NoopFallback();
+        KEYCODE_EXECUTOR.init();
     }
 
     @Keep
