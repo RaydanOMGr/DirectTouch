@@ -9,9 +9,8 @@ import org.spongepowered.asm.mixin.injection.Inject;
 
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import top.fifthlight.touchcontroller.common.platform.Platform;
-import top.fifthlight.touchcontroller.common.platform.provider.PlatformProvider;
 
-@Mixin(PlatformProvider.class)
+@Mixin(targets = { "top.fifthlight.touchcontroller.common.platform.provider.PlatformProvider", "top.fifthlight.touchcontroller.common.platform.PlatformProvider" })
 public class PlatformProviderMixin {
     @Inject(
             method = "loadPlatform",
