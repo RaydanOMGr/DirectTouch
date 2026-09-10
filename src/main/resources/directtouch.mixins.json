@@ -2,7 +2,7 @@
   "required": true,
   "minVersion": "0.8",
   "package": "me.andreasmelone.directtouch.mixin",
-  "compatibilityLevel": "JAVA_25",
+  "compatibilityLevel": "JAVA_8",
   "mixins": [
     "PlatformProviderMixin"
   ],

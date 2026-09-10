@@ -30,13 +30,21 @@ public class AndroidLibLoader {
 
     private static String getArch() {
         String arch = System.getProperty("os.arch").toLowerCase();
-        return switch (arch) {
-            case "x86" -> "x86";
-            case "amd64", "x86_64" -> "x86_64";
-            case "arm", "armv7", "armv7l" -> "armeabi-v7a";
-            case "aarch64", "arm64" -> "arm64-v8a";
-            default -> throw new UnsupportedOperationException("Unknown architecture: " + arch);
-        };
+        switch (arch) {
+            case "x86":
+                return "x86";
+            case "amd64":
+            case "x86_64":
+                return "x86_64";
+            case "arm":
+            case "armv7":
+            case "armv7l":
+                return "armeabi-v7a";
+            case "aarch64":
+            case "arm64":
+                return "arm64-v8a";
+            default: throw new UnsupportedOperationException("Unknown architecture: " + arch);
+        }
     }
 
 
@@ -54,9 +62,22 @@ public class AndroidLibLoader {
                 LOGGER.error("Failed to open {}", pathInJar);
                 return;
             }
-            in.transferTo(dest);
+            transferTo(in, dest);
         } catch (IOException e) {
             LOGGER.error("Failed to extract library!", e);
         }
+    }
+
+    private static long transferTo(InputStream in, OutputStream out) throws IOException {
+        byte[] buffer = new byte[16565];
+        long total = 0;
+        int bytesRead;
+
+        while ((bytesRead = in.read(buffer)) != -1) {
+            out.write(buffer, 0, bytesRead);
+            total += bytesRead;
+        }
+
+        return total;
     }
 }

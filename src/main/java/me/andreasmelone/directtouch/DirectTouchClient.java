@@ -49,14 +49,15 @@ public class DirectTouchClient implements ClientModInitializer {
             DirectTouchAndroidNative.setDexData(dex.toByteArray());
             int result = DirectTouchAndroidNative.init(NATIVE_PATH);
             switch (result) {
-                case INIT_SUCCESS -> initializedNative = true;
-                case INIT_DEX_NOT_INITIALIZED -> LOGGER.error("Dex did not initialize, mod will not function");
-                case INIT_DVM_NOT_FOUND -> {
+                case INIT_SUCCESS: initializedNative = true; break;
+                case INIT_DEX_NOT_INITIALIZED: LOGGER.error("Dex did not initialize, mod will not function"); break;
+                case INIT_DVM_NOT_FOUND: {
                     LOGGER.error("Dalvik VM cannot be found, are we running on Android?");
                     LOGGER.error("Mod will not function");
+                    break;
                 }
-                case INIT_METHOD_NOT_INITIALIZED -> LOGGER.error("JNI could not initialized methods, mod will not function");
-                default -> LOGGER.error("An error occurred, mod will not function 0x{}", Integer.toHexString(result).toUpperCase()); // also covers INIT_GENERIC_ERROR
+                case INIT_METHOD_NOT_INITIALIZED: LOGGER.error("JNI could not initialized methods, mod will not function"); break;
+                default: LOGGER.error("An error occurred, mod will not function 0x{}", Integer.toHexString(result).toUpperCase()); break; // also covers INIT_GENERIC_ERROR
             }
         }
 
