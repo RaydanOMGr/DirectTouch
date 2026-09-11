@@ -8,7 +8,7 @@
     "AndreasMelone"
   ],
   "contact": {},
-  "license": "All-Rights-Reserved",
+  "license": "LGPL-3.0",
   "icon": "assets/directtouch/icon.png",
   "environment": "client",
   "entrypoints": {
