@@ -13,9 +13,11 @@ import top.fifthlight.touchcontroller.common.platform.Platform;
 @Mixin(targets = { "top.fifthlight.touchcontroller.common.platform.provider.PlatformProvider", "top.fifthlight.touchcontroller.common.platform.PlatformProvider" })
 public class PlatformProviderMixin {
     @Inject(
-            method = "loadPlatform",
+            method = { "loadPlatform$touchcontroller_common_platform_provider_provider", "loadPlatform" },
             at = @At("HEAD"),
-            cancellable = true
+            cancellable = true,
+            require = 1,
+            allow = 1
     )
     public void loadPlatform(CallbackInfoReturnable<kotlin.jvm.functions.Function0<Platform>> cir) {
         if(DirectTouchClient.isInitializedNative()) {
