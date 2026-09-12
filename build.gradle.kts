@@ -157,7 +157,7 @@ modstitch {
 }
 
 tasks.named("compileJava") {
-    dependsOn(touchController)
+    dependsOn(extractTouchController)
 }
 
 tasks.register("moveLibs", Copy::class) {
