@@ -19,7 +19,7 @@ val version = "1.0.0"
 
 // Stonecutter constants for mod loaders.
 // See https://stonecutter.kikugie.dev/stonecutter/guide/comments#condition-constants
-var constraint: String = name.split("-")[name.split("-").size - 1]
+var constraint: String = name.substringAfterLast("-")
 val tcVersion: String = findProperty("deps.touchcontroller") as? String? ?: "${sc.current.version}+$constraint"
 stonecutter {
     constants.match(
@@ -195,8 +195,7 @@ fun extractTouchControllerJiJ(input: Set<File>, version: String) {
 
             while (stream.nextEntry.also { entry = it } != null) {
                 if(!entry!!.name.endsWith(".jar")) continue
-                val splitEntry = entry.name.split("/")
-                val fileName = splitEntry.last()
+                val fileName = entry.name.substringAfterLast('/')
 
                 fun isExcluded(prefix: String): Boolean {
                     if(fileName.startsWith(prefix)) {
@@ -207,7 +206,7 @@ fun extractTouchControllerJiJ(input: Set<File>, version: String) {
                     return false
                 }
 
-                if(isExcluded("touchcontroller-") or isExcluded("combine-") or isExcluded("combine-neoforge-")) continue
+                if(isExcluded("touchcontroller-") || isExcluded("combine-") || isExcluded("combine-neoforge-")) continue
 
                 println("Entry name: ${entry.name}")
                 val addedJar = extractedTouchController.get()
