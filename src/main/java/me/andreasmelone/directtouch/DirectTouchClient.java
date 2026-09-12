@@ -3,7 +3,6 @@ package me.andreasmelone.directtouch;
 import com.mojang.logging.LogUtils;
 import me.andreasmelone.directtouch.pojav.AndroidLibLoader;
 import me.andreasmelone.directtouch.pojav.DirectTouchAndroidNative;
-import net.fabricmc.api.ClientModInitializer;
 import org.slf4j.Logger;
 import top.fifthlight.touchcontroller.proxy.message.ProxyMessage;
 
@@ -16,7 +15,22 @@ import java.util.regex.Pattern;
 
 import static me.andreasmelone.directtouch.pojav.DirectTouchAndroidNative.*;
 
-public class DirectTouchClient implements ClientModInitializer {
+//? if fabric {
+import net.fabricmc.api.ClientModInitializer;
+//? } else if neoforge {
+/*import net.neoforged.api.distmarker.Dist;
+import net.neoforged.fml.common.Mod;
+*///? } else if forge {
+/*import net.minecraftforge.fml.common.Mod;
+*///? }
+
+//? if !fabric
+//@Mod(value = DirectTouchClient.MOD_ID /*? if neoforge {*//*, dist = Dist.CLIENT *//*? }*/)
+public class DirectTouchClient
+        //? if fabric
+        implements ClientModInitializer
+{
+    public static final String MOD_ID = "directtouch";
     private static final Logger LOGGER = LogUtils.getLogger();
     private static boolean initializedNative = false;
 
@@ -24,6 +38,13 @@ public class DirectTouchClient implements ClientModInitializer {
 
     public boolean isPojav = false;
 
+    //? if !fabric {
+    /*public DirectTouchClient() {
+        onInitializeClient();
+    }
+    *///? }
+
+    //? if fabric
     @Override
     public void onInitializeClient() {
         String packageName = null;

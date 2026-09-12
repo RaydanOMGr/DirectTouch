@@ -8,6 +8,7 @@
   ],
   "client": [
   ],
+  "plugin": "me.andreasmelone.directtouch.DirectTouchMixinPlugin",
   "injectors": {
     "defaultRequire": 1
   },

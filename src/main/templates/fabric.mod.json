@@ -1,0 +1,30 @@
+{
+  "schemaVersion": 1,
+  "id": "${mod_id}",
+  "name": "${mod_name}",
+  "version": "${mod_version}",
+  "description": "${mod_description}",
+  "environment": "client",
+  "contact": {
+    "issues": "${mod_issue_tracker}",
+    "sources": "${mod_repo}"
+  },
+  "icon": "assets/${mod_id}/icon.png",
+  "entrypoints": {
+    "client": [
+      "me.andreasmelone.directtouch.DirectTouchClient"
+    ]
+  },
+  "depends": {
+    "fabricloader": ">=0.16",
+    "minecraft": "*",
+    "java": ">=${java_version}"
+  },
+  "custom": {
+    "modmenu": {
+      "links": {
+        "modmenu.discord": "https://discord.com/invite/3vfnvBFRKv"
+      }
+    }
+  }
+}
