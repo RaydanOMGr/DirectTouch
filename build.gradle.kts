@@ -182,7 +182,7 @@ tasks.named("processResources") {
 }
 
 tasks.named("jar", Jar::class) {
-    archiveVersion = "$version-tc${sc.current.version}"
+    archiveVersion = "$version-tc${sc.current.version}-$constraint"
 }
 
 dependencies {
