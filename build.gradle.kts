@@ -181,6 +181,10 @@ tasks.named("processResources") {
     dependsOn("moveDex")
 }
 
+tasks.named("jar", Jar::class) {
+    archiveVersion = "$version-tc${sc.current.version}"
+}
+
 dependencies {
     implementation("org.jetbrains.kotlin:kotlin-stdlib:2.4.20")
     touchController(modstitchModImplementation("maven.modrinth:touchcontroller:$tcVersion")!!)
