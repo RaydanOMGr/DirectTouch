@@ -17,8 +17,3 @@ license = "${mod_license}"
     versionRange = "[${forge_version},)"
     ordering = "NONE"
     side = "BOTH"
-
-[[dependencies."${mod_id}"]]
-    modId = "minecraft"
-    versionRange = "[${minecraft_version},)"
-    mandatory = true
