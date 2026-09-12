@@ -1,3 +1,11 @@
+/*
+ * This file originates from the Amethyst-Android project and is licensed under the GNU Lesser General Public License,
+ * version 3 or later.
+ * See the LICENSE file in the Amethyst-Android repository for the full license text.
+ *
+ * Repository: https://github.com/AngelAuraMC/Amethyst-Android
+ * Path: app_pojavlauncher/src/main/java/net/kdt/pojavlaunch/utils/TouchControllerUtils.java
+ */
 package me.andreasmelone.directtouch.pojav;
 
 import static androidx.core.content.ContextCompat.checkSelfPermission;
