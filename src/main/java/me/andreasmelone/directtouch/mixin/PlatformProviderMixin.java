@@ -22,14 +22,14 @@ public class PlatformProviderMixin {
             allow = 1
     )
     public void loadPlatform(
-            //? if !is_zero_two {
+            //? if touchcontroller: >=0.3 {
             CallbackInfoReturnable<kotlin.jvm.functions.Function0<Platform>> cir
             //? } else
             //CallbackInfoReturnable<Platform> cir
     ) {
         if(DirectTouchClient.isInitializedNative()) {
             LogUtils.getLogger().info("Loading DirectTouchPlatform!");
-            //? if !is_zero_two {
+            //? if touchcontroller: >=0.3 {
             cir.setReturnValue(DirectTouchPlatform::new);
             //? } else
             //cir.setReturnValue(new DirectTouchPlatform());

@@ -29,7 +29,7 @@ stonecutter {
         "forge"
     )
 
-    constants.put("is_zero_two", tcVersion.startsWith("0.2"))
+    dependencies["touchcontroller"] = tcVersion
 }
 
 val touchController by configurations.creating

@@ -6,12 +6,12 @@ import me.andreasmelone.directtouch.pojav.DirectTouchAndroidNative;
 import top.fifthlight.touchcontroller.common.platform.Platform;
 import top.fifthlight.touchcontroller.proxy.message.ProxyMessage;
 
-//? if !is_zero_two
+//? if touchcontroller: >=0.3
 import top.fifthlight.combine.core.data.Text;
 public class DirectTouchPlatform implements Platform {
     private final ByteBuffer buffer = ByteBuffer.allocateDirect(65536);
 
-    //? if !is_zero_two {
+    //? if touchcontroller: >=0.3 {
     @Override
     public Text getName() {
         return Text.Companion.literal("DirectTouch (running on PojIntegr)");
