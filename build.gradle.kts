@@ -156,6 +156,10 @@ modstitch {
     }
 }
 
+java {
+    withSourcesJar()
+}
+
 tasks.named("compileJava") {
     dependsOn(extractTouchController)
 }
@@ -182,6 +186,10 @@ tasks.named("processResources") {
 }
 
 tasks.named("jar", Jar::class) {
+    archiveVersion = "$version-tc${sc.current.version}-$constraint"
+}
+
+tasks.named("sourcesJar", Jar::class) {
     archiveVersion = "$version-tc${sc.current.version}-$constraint"
 }
 
