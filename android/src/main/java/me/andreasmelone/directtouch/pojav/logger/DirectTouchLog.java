@@ -21,12 +21,12 @@ public class DirectTouchLog {
     }
 
     public static void error(String tag, String message, Throwable thr) {
-        Log.v(tag, message);
+        Log.v(tag, message, thr);
         StringBuilder sb = new StringBuilder();
         sb.append("E | [").append(tag).append("] ").append(message).append("\n")
-                .append(thr.getMessage()).append("\n");
+                .append(thr.getClass().getName()).append(": ").append(thr.getMessage()).append("\n");
         for (StackTraceElement stackTraceElement : thr.getStackTrace()) {
-            sb.append("\tat ").append(stackTraceElement.toString());
+            sb.append("\tat ").append(stackTraceElement.toString()).append("\n");
         }
 
         PojavDirectTouchNative.logMessage(sb.toString());
