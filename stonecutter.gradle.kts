@@ -1,7 +1,7 @@
 plugins {
     id("dev.kikugie.stonecutter")
 }
-stonecutter active "0.3.1-alpha14-fabric"
+stonecutter active "0.3.1-alpha15-fabric"
 
 allprojects {
     repositories {
