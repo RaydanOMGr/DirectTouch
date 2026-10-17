@@ -30,6 +30,7 @@ stonecutter {
     )
 
     dependencies["touchcontroller"] = tcVersion
+    dependencies["mc"] = minecraft
 }
 
 val touchController by configurations.creating
@@ -210,15 +211,19 @@ fun extractTouchControllerJiJ(input: Set<File>, version: String) {
                 val fileName = entry.name.substringAfterLast('/')
 
                 fun isExcluded(prefix: String): Boolean {
-                    if(fileName.startsWith(prefix)) {
-                        if(fileName[prefix.length].isDigit()) {
-                            if(!fileName.startsWith("$prefix$version")) return true
-                        }
-                    }
-                    return false
+                    if (!fileName.startsWith(prefix)) return false
+
+                    val versionRegex = Regex(
+                        "^${Regex.escape(prefix)}${Regex.escape(version).replace("\\.", "[-.]")}(?=$|[-.])"
+                    )
+
+                    val suffix = fileName.removePrefix(prefix)
+                    return suffix.firstOrNull()?.isDigit() == true && !versionRegex.containsMatchIn(fileName)
                 }
 
-                if(isExcluded("touchcontroller-") || isExcluded("combine-") || isExcluded("combine-neoforge-")) continue
+                if(isExcluded("touchcontroller-") || isExcluded("combine-") || isExcluded("combine-neoforge-")) {
+                    continue
+                }
 
                 println("Entry name: ${entry.name}")
                 val addedJar = extractedTouchController.get()

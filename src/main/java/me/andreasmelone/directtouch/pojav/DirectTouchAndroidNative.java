@@ -1,15 +1,11 @@
 package me.andreasmelone.directtouch.pojav;
 
-import com.mojang.logging.LogUtils;
-
+import org.apache.logging.log4j.LogManager;
 import org.intellij.lang.annotations.MagicConstant;
 
 import java.nio.ByteBuffer;
 
 import me.andreasmelone.directtouch.DirectTouchClient;
-import top.fifthlight.touchcontroller.proxy.message.CapabilityMessage;
-import top.fifthlight.touchcontroller.proxy.message.InitializeMessage;
-import top.fifthlight.touchcontroller.proxy.message.InputStatusMessage;
 import top.fifthlight.touchcontroller.proxy.message.ProxyMessage;
 
 @SuppressWarnings("UnsafeDynamicallyLoadedCode")
@@ -38,7 +34,7 @@ public class DirectTouchAndroidNative {
 
     static {
         NATIVE_PATH = AndroidLibLoader.INSTANCE.get("directtouch");
-        LogUtils.getLogger().info("Loading natives from {}", NATIVE_PATH);
+        LogManager.getLogger().info("Loading natives from {}", NATIVE_PATH);
         System.load(NATIVE_PATH);
     }
 }

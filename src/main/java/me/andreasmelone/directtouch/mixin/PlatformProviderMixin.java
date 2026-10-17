@@ -1,8 +1,9 @@
 package me.andreasmelone.directtouch.mixin;
 
-import com.mojang.logging.LogUtils;
 import me.andreasmelone.directtouch.DirectTouchClient;
 import me.andreasmelone.directtouch.DirectTouchPlatform;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Pseudo;
 import org.spongepowered.asm.mixin.injection.At;
@@ -27,14 +28,15 @@ public class PlatformProviderMixin {
             //? } else
             //CallbackInfoReturnable<Platform> cir
     ) {
+        Logger logger = LogManager.getLogger("me.andreasmelone.directtouch.mixin.PlatformProviderMixin");
         if(DirectTouchClient.isInitializedNative()) {
-            LogUtils.getLogger().info("Loading DirectTouchPlatform!");
+            logger.info("Loading DirectTouchPlatform!");
             //? if touchcontroller: >=0.3 {
             cir.setReturnValue(DirectTouchPlatform::new);
             //? } else
             //cir.setReturnValue(new DirectTouchPlatform());
         } else {
-            LogUtils.getLogger().warn("DirectTouch is not initialized!");
+            logger.warn("DirectTouch is not initialized!");
         }
     }
 }

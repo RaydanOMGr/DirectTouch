@@ -1,12 +1,12 @@
 package me.andreasmelone.directtouch.pojav;
 
-import com.mojang.logging.LogUtils;
-import org.slf4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.io.*;
 
 public class AndroidLibLoader {
-    private static final Logger LOGGER = LogUtils.getLogger();
+    private static final Logger LOGGER = LogManager.getLogger();
     public static final AndroidLibLoader INSTANCE = new AndroidLibLoader();
 
     private String path = "";

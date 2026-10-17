@@ -1,9 +1,9 @@
 package me.andreasmelone.directtouch;
 
-import com.mojang.logging.LogUtils;
 import me.andreasmelone.directtouch.pojav.AndroidLibLoader;
 import me.andreasmelone.directtouch.pojav.DirectTouchAndroidNative;
-import org.slf4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import top.fifthlight.touchcontroller.proxy.message.ProxyMessage;
 
 import java.io.ByteArrayOutputStream;
@@ -25,13 +25,13 @@ import net.neoforged.fml.common.Mod;
 *///? }
 
 //? if !fabric
-//@Mod(value = DirectTouchClient.MOD_ID /*? if neoforge {*//*, dist = Dist.CLIENT *//*? }*/)
+//@Mod(value = DirectTouchClient.MOD_ID /*? if neoforge && mc: >=1.21 {*//*, dist = Dist.CLIENT *//*? }*/)
 public class DirectTouchClient
         //? if fabric
         implements ClientModInitializer
 {
     public static final String MOD_ID = "directtouch";
-    private static final Logger LOGGER = LogUtils.getLogger();
+    private static final Logger LOGGER = LogManager.getLogger();
     private static boolean initializedNative = false;
 
     static final Queue<ProxyMessage> PROXY_MESSAGE_QUEUE = new LinkedBlockingQueue<>();
