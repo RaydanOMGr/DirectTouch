@@ -42,7 +42,7 @@ public class DirectTouchAndroid {
         try {
             Log.i("PojIntegr", "Loading lib from " + nativeLibPath);
             System.load(nativeLibPath);
-        } catch (Exception e) {
+        } catch (Throwable e) {
             Log.e("PojIntegr", "Couldn't load library", e);
         }
 
@@ -94,7 +94,7 @@ public class DirectTouchAndroid {
             TouchControllerUtils.initialize(activity, touchControllerInputView);
             POJAV.tryDisableMojoPanning();
             DirectTouchLog.info("DirectTouch", "Successfully initialized direct touch backend!");
-        } catch (Exception e) {
+        } catch (Throwable e) {
             DirectTouchLog.error("PojIntegr", "Something went wrong", e);
         }
     }
@@ -131,7 +131,7 @@ public class DirectTouchAndroid {
     public static void receiveMessage(byte[] bytes) {
         try {
             MESSAGE_QUEUE.put(new RawMessage.Data(bytes));
-        } catch (Exception e) {
+        } catch (Throwable e) {
             DirectTouchLog.error("PojIntegr", "Something went wrong", e);
         }
     }
@@ -140,7 +140,7 @@ public class DirectTouchAndroid {
     public static void close() {
         try {
             TouchControllerUtils.proxyClient.close();
-        } catch (Exception e) {
+        } catch (Throwable e) {
             DirectTouchLog.error("PojIntegr", "Something went wrong", e);
         }
     }

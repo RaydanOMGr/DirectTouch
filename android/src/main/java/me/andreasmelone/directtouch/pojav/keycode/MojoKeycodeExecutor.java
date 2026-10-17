@@ -11,28 +11,33 @@ public class MojoKeycodeExecutor implements KeycodeExecutor {
 
     @Override
     public boolean init() {
-        try {
-            Class<?> platformClass =
-                    Class.forName("git.artdeell.mojo.game.platform.Platform");
+        String[] classesToTry = new String[] {
+                "git.artdeell.mojo.game.platform.Platform", "net.kdt.pojavlaunch.game.platform.Platform"
+        };
+        for (String classToTry : classesToTry) {
+            try {
+                Class<?> platformClass = Class.forName(classToTry);
 
-            Field platformField = platformClass.getField("PLATFORM");
-            platform = platformField.get(null);
-            if(platform == null) return false;
+                Field platformField = platformClass.getField("PLATFORM");
+                platform = platformField.get(null);
+                if(platform == null) return false;
 
-            sendKeyEvent = platform.getClass().getMethod(
-                    "sendKeyEvent",
-                    int.class,
-                    int.class,
-                    int.class,
-                    char.class
-            );
+                sendKeyEvent = platform.getClass().getMethod(
+                        "sendKeyEvent",
+                        int.class,
+                        int.class,
+                        int.class,
+                        char.class
+                );
 
-            return true;
-        } catch (Throwable ignored) {
-            platform = null;
-            sendKeyEvent = null;
-            return false;
+                return true;
+            } catch (Throwable ignored) {
+                platform = null;
+                sendKeyEvent = null;
+                continue;
+            }
         }
+        return false;
     }
 
     @Override

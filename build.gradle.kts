@@ -15,7 +15,7 @@ fun prop(name: String, consumer: (prop: String) -> Unit) {
 val minecraft = property("deps.minecraft") as String
 val isIdeaSync = System.getProperty("idea.sync.active").toBoolean()
 
-val version = "1.1.0"
+val version = "1.2.0"
 
 // Stonecutter constants for mod loaders.
 // See https://stonecutter.kikugie.dev/stonecutter/guide/comments#condition-constants
