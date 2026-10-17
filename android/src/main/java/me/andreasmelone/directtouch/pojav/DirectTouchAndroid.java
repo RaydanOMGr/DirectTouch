@@ -1,8 +1,7 @@
 package me.andreasmelone.directtouch.pojav;
 
-import static net.kdt.pojavlaunch.Tools.dpToPx;
+import static me.andreasmelone.directtouch.pojav.launcher.IPojavLauncher.getId;
 
-import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.res.Resources;
 import android.util.Log;
@@ -14,11 +13,9 @@ import android.widget.FrameLayout;
 
 import androidx.annotation.Keep;
 
-import net.kdt.pojavlaunch.MainActivity;
-import net.kdt.pojavlaunch.Tools;
-import net.kdt.pojavlaunch.prefs.LauncherPreferences;
+import me.andreasmelone.directtouch.pojav.launcher.DummyPojavLauncher;
+import me.andreasmelone.directtouch.pojav.launcher.IPojavLauncher;
 
-import java.lang.reflect.Field;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 
@@ -26,30 +23,43 @@ import me.andreasmelone.directtouch.pojav.keycode.MojoKeycodeExecutor;
 import me.andreasmelone.directtouch.pojav.keycode.KeycodeExecutor;
 import me.andreasmelone.directtouch.pojav.keycode.LegacyMojoKeycodeExecutor;
 import me.andreasmelone.directtouch.pojav.keycode.StandardPojavKeycodeExecutor;
+import me.andreasmelone.directtouch.pojav.launcher.MojoLauncher;
+import me.andreasmelone.directtouch.pojav.launcher.StandardPojavLauncher;
+import me.andreasmelone.directtouch.pojav.logger.DirectTouchLog;
+import me.andreasmelone.directtouch.pojav.touchcontroller.TouchControllerInputView;
+import me.andreasmelone.directtouch.pojav.touchcontroller.TouchControllerUtils;
 
 @Keep
 @SuppressWarnings("unused")
 public class DirectTouchAndroid {
     public static KeycodeExecutor KEYCODE_EXECUTOR = new KeycodeExecutor.NoopFallback();
+    public static IPojavLauncher POJAV = new DummyPojavLauncher();
 
     static final BlockingQueue<RawMessage> MESSAGE_QUEUE = new LinkedBlockingQueue<>();
 
     @Keep
     public static void setupTouchController(String nativeLibPath) {
         try {
+            Log.i("PojIntegr", "Loading lib from " + nativeLibPath);
             System.load(nativeLibPath);
         } catch (Exception e) {
             Log.e("PojIntegr", "Couldn't load library", e);
         }
 
         try {
-            MainActivity activity = (MainActivity) MainActivity.touchCharInput.getContext();
+            selectPojavBackend();
+
+            Activity activity = POJAV.getMainActivity();
+            if(activity == null) {
+                DirectTouchLog.error("DirectTouch", "Failed to get main activity, exiting!");
+                return;
+            }
 
             Resources res = activity.getResources();
             String packageName = activity.getPackageName();
 
             selectKeycodeExecutor();
-            Log.v("DirectTouch", "Using " + KEYCODE_EXECUTOR.getName() + " keycode executor!");
+            DirectTouchLog.verbose("DirectTouch", "Using " + KEYCODE_EXECUTOR.getName() + " keycode executor!");
 
             FrameLayout container = activity.findViewById(getId(activity, "content_frame"));
             FrameLayout layout = container.findViewById(getId(activity, "main_control_layout"));
@@ -57,8 +67,8 @@ public class DirectTouchAndroid {
 
             TouchControllerInputView touchControllerInputView = new TouchControllerInputView(activity);
             FrameLayout.LayoutParams params = new FrameLayout.LayoutParams(
-                    (int)dpToPx(1),
-                    (int)dpToPx(1)
+                    (int)POJAV.dpToPx(1),
+                    (int)POJAV.dpToPx(1)
             );
             params.gravity = Gravity.BOTTOM;
             touchControllerInputView.setLayoutParams(params);
@@ -67,7 +77,7 @@ public class DirectTouchAndroid {
                 touchControllerInputView.setSize(glSurface.getWidth(), glSurface.getHeight());
             });
 
-            Tools.runOnUiThread(() -> {
+            POJAV.runOnUiThread(() -> {
                 layout.addView(touchControllerInputView);
             });
 
@@ -82,10 +92,10 @@ public class DirectTouchAndroid {
                 }
             });
             TouchControllerUtils.initialize(activity, touchControllerInputView);
-            tryDisableMojoPanning();
-            Log.i("DirectTouch", "Successfully initialized direct touch backend!");
+            POJAV.tryDisableMojoPanning();
+            DirectTouchLog.info("DirectTouch", "Successfully initialized direct touch backend!");
         } catch (Exception e) {
-            Log.e("PojIntegr", "Something went wrong", e);
+            DirectTouchLog.error("PojIntegr", "Something went wrong", e);
         }
     }
 
@@ -103,12 +113,26 @@ public class DirectTouchAndroid {
         KEYCODE_EXECUTOR.init();
     }
 
+    private static void selectPojavBackend() {
+        try {
+            if (classExists("git.artdeell.mojo.Tools")) {
+                POJAV = new MojoLauncher();
+            } else {
+                POJAV = new StandardPojavLauncher();
+            }
+        } catch (Exception e) {
+            DirectTouchLog.error("PojIntegr", "Failed to initialize pojav backend", e);
+            POJAV = new DummyPojavLauncher();
+        }
+        DirectTouchLog.info("PojIntegr", "Selected pojav backend " + POJAV.getName());
+    }
+
     @Keep
     public static void receiveMessage(byte[] bytes) {
         try {
             MESSAGE_QUEUE.put(new RawMessage.Data(bytes));
         } catch (Exception e) {
-            Log.e("PojIntegr", "Something went wrong", e);
+            DirectTouchLog.error("PojIntegr", "Something went wrong", e);
         }
     }
 
@@ -117,29 +141,16 @@ public class DirectTouchAndroid {
         try {
             TouchControllerUtils.proxyClient.close();
         } catch (Exception e) {
-            Log.e("PojIntegr", "Something went wrong", e);
+            DirectTouchLog.error("PojIntegr", "Something went wrong", e);
         }
     }
 
-    @SuppressLint("DiscouragedApi")
-    private static int getId(Activity activity, String name) {
-        return activity.getResources().getIdentifier(name, "id", activity.getPackageName());
-    }
-
-    private static void tryDisableMojoPanning() {
+    private static boolean classExists(String className) {
         try {
-            Class<?> launcherPrefs = LauncherPreferences.class;
-            Field autoPanning;
-            try {
-                autoPanning = launcherPrefs.getDeclaredField("PREF_KEYBOARD_AUTOPANNING");
-            } catch (NoSuchFieldException ignored) {
-                // not mojo then
-                return;
-            }
-            autoPanning.setBoolean(null, false);
-            Log.i("DirectTouch", "Disabled mojo panning!");
-        } catch (Exception e) {
-            Log.e("DirectTouch", "Failed to disable mojo panning", e);
+            Class.forName(className);
+            return true;
+        } catch (ClassNotFoundException e) {
+            return false;
         }
     }
 }

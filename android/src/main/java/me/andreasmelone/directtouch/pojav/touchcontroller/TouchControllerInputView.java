@@ -6,7 +6,7 @@
  * Repository: https://github.com/AngelAuraMC/Amethyst-Android
  * Path: app_pojavlauncher/src/main/java/net/kdt/pojavlaunch/utils/TouchControllerInputView.java
  */
-package me.andreasmelone.directtouch.pojav;
+package me.andreasmelone.directtouch.pojav.touchcontroller;
 
 import android.content.ClipData;
 import android.content.ClipboardManager;
@@ -36,6 +36,7 @@ import androidx.annotation.Nullable;
 import androidx.core.content.ContextCompat;
 import androidx.core.view.inputmethod.EditorInfoCompat;
 
+import me.andreasmelone.directtouch.pojav.DirectTouchAndroid;
 import top.fifthlight.touchcontroller.proxy.client.LauncherProxyClient;
 import top.fifthlight.touchcontroller.proxy.message.FloatRect;
 import top.fifthlight.touchcontroller.proxy.message.input.TextInputState;
@@ -45,7 +46,6 @@ import top.fifthlight.touchcontroller.proxy.message.input.TextRange;
 import static top.fifthlight.touchcontroller.proxy.message.input.TextInputStateKt.getCompositionText;
 import static top.fifthlight.touchcontroller.proxy.message.input.TextInputStateKt.getSelectionText;
 
-import net.kdt.pojavlaunch.EfficientAndroidLWJGLKeycode;
 import net.kdt.pojavlaunch.customcontrols.keyboard.CharacterSenderStrategy;
 
 public class TouchControllerInputView extends View implements LauncherProxyClient.InputHandler, LauncherProxyClient.KeyboardShowHandler {

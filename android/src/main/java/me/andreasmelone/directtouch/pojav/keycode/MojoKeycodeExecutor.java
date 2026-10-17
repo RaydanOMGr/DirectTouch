@@ -13,7 +13,7 @@ public class MojoKeycodeExecutor implements KeycodeExecutor {
     public boolean init() {
         try {
             Class<?> platformClass =
-                    Class.forName("net.kdt.pojavlaunch.game.platform.Platform");
+                    Class.forName("git.artdeell.mojo.game.platform.Platform");
 
             Field platformField = platformClass.getField("PLATFORM");
             platform = platformField.get(null);

@@ -166,16 +166,7 @@ Java_me_andreasmelone_directtouch_pojav_DirectTouchAndroidNative_init(JNIEnv *en
         return INIT_METHOD_NOT_INITIALIZED;
     }
 
-    jsize path_length = (*env)->GetStringLength(env, own_path);
-    const jchar *path_chars = (*env)->GetStringChars(env, own_path, NULL);
-
-    jstring path_copy_dvm = (*dalvik_env)->NewString(dalvik_env, path_chars, path_length);
-
-    (*env)->ReleaseStringChars(env, own_path, path_chars);
-
-    (*dalvik_env)->CallStaticVoidMethod(dalvik_env, directtouch_environ->class_mainClass_dvm, directtouch_environ->method_setupTouchController_dvm, path_copy_dvm);
-    CHECK_EXCEPTION(dalvik_env);
-
+    // initialize methods BEFORE calling init (bruh)
     directtouch_environ->method_receiveMessage_dvm = (*dalvik_env)->GetStaticMethodID(dalvik_env, directtouch_environ->class_mainClass_dvm, "receiveMessage", "([B)V");
     if(!directtouch_environ->method_receiveMessage_dvm) {
         printf("[DirectTouch/Init] Failed to get receiveMessage([B)V dvm method\n");
@@ -195,6 +186,26 @@ Java_me_andreasmelone_directtouch_pojav_DirectTouchAndroidNative_init(JNIEnv *en
         return INIT_GENERIC_ERROR;
     }
 
+    jclass system_class = (*env)->FindClass(env, "java/lang/System");
+    jfieldID sysout_field = (*env)->GetStaticFieldID(env, system_class, "out", "Ljava/io/PrintStream;");
+    directtouch_environ->object_sysout_jvm = (*env)->NewGlobalRef(env, (*env)->GetStaticObjectField(env, system_class, sysout_field));
+    jclass sysout_class = (*env)->FindClass(env, "java/io/PrintStream");
+    directtouch_environ->method_println_jvm = (*env)->GetMethodID(env, sysout_class, "println", "(Ljava/lang/String;)V");
+    if(!directtouch_environ->object_sysout_jvm || !directtouch_environ->method_println_jvm) {
+        printf("[DirectTouch/Init] Failed to get System.out#println(Ljava/lang/String;)V jvm method\n");
+        return INIT_GENERIC_ERROR;
+    }
+
+    jsize path_length = (*env)->GetStringLength(env, own_path);
+    const jchar *path_chars = (*env)->GetStringChars(env, own_path, NULL);
+
+    jstring path_copy_dvm = (*dalvik_env)->NewString(dalvik_env, path_chars, path_length);
+
+    (*env)->ReleaseStringChars(env, own_path, path_chars);
+
+    (*dalvik_env)->CallStaticVoidMethod(dalvik_env, directtouch_environ->class_mainClass_dvm, directtouch_environ->method_setupTouchController_dvm, path_copy_dvm);
+    CHECK_EXCEPTION(dalvik_env);
+    
     return INIT_SUCCESS;
 }
 
@@ -215,7 +226,7 @@ Java_me_andreasmelone_directtouch_pojav_DirectTouchAndroidNative_setDexData(JNIE
     jbyte* b = (*env)->GetByteArrayElements(env, data, &isCopy);
     if(!b) {
         DIE_JVM(env, "[DirectTouch/SetDexData] Failed to get byte array, exiting\n");
-
+        return;
     }
     jint size = (*env)->GetArrayLength(env, data);
 
@@ -224,6 +235,7 @@ Java_me_andreasmelone_directtouch_pojav_DirectTouchAndroidNative_setDexData(JNIE
     directtouch_environ->dex_data = malloc(size);
     if(!directtouch_environ->dex_data) {
         DIE_JVM(env, "[DirectTouch/SetDexData] Failed to allocate memory, exiting\n");
+        return;
     }
     memcpy(directtouch_environ->dex_data, b, size);
 
@@ -233,7 +245,8 @@ Java_me_andreasmelone_directtouch_pojav_DirectTouchAndroidNative_setDexData(JNIE
 JNIEXPORT void JNICALL
 Java_me_andreasmelone_directtouch_pojav_DirectTouchAndroidNative_sendMessage(JNIEnv *env, jclass clazz, jint length, jobject message_bytes) {
     if(!directtouch_environ->class_mainClass_dvm || !directtouch_environ->method_receiveMessage_dvm) {
-        DIE("[DirectTouch/SetKeyboardState] Main class or receive message not initialized!\n");
+        DIE("[DirectTouch/SendMessage] Main class or receive message not initialized!\n");
+        return;
     }
 
     JNIEnv *dvm;
@@ -268,7 +281,8 @@ Java_me_andreasmelone_directtouch_pojav_PojavDirectTouchNative_sendMessage(JNIEn
                                                                            jclass clazz, jint size,
                                                                            jint offset, jobject buffer) {
     if(!directtouch_environ->class_androidNative_jvm || !directtouch_environ->method_receiveMessage_jvm) {
-        DIE_JVM(env, "[DirectTouch/SetKeyboardState] AndroidNative class or receive message not initialized!\n");
+        DIE_JVM(env, "[DirectTouch/SendMessage] AndroidNative class or receive message not initialized!\n");
+        return;
     }
 
     JNIEnv *jvm;
@@ -302,6 +316,7 @@ JNIEXPORT void JNICALL
 Java_me_andreasmelone_directtouch_pojav_DirectTouchAndroidNative_close(JNIEnv *env, jclass clazz) {
     if(!directtouch_environ->class_mainClass_dvm || !directtouch_environ->method_close_dvm) {
         DIE_JVM(env, "[DirectTouch/Close] AndroidNative class or close not initialized!\n");
+        return;
     }
 
     JNIEnv *dvm;
@@ -316,4 +331,32 @@ Java_me_andreasmelone_directtouch_pojav_DirectTouchAndroidNative_close(JNIEnv *e
 
     (*dvm)->CallStaticVoidMethod(dvm, directtouch_environ->class_mainClass_dvm, directtouch_environ->method_close_dvm);
     CHECK_EXCEPTION(dvm);
+}
+
+JNIEXPORT void JNICALL
+Java_me_andreasmelone_directtouch_pojav_PojavDirectTouchNative_logMessage(JNIEnv *env, jclass clazz, jstring message) {
+    if(!directtouch_environ->object_sysout_jvm || !directtouch_environ->method_println_jvm) {
+        DIE_JVM(env, "[DirectTouch/LogMessage] System.out object or method println not initialized!\n");
+        return;
+    }
+
+    JNIEnv *jvm;
+    jint result = (*directtouch_environ->minecraft_jvm)->GetEnv(directtouch_environ->minecraft_jvm, (void**)&jvm, JNI_VERSION_1_6);
+    if (result == JNI_EDETACHED) {
+        result = (*directtouch_environ->minecraft_jvm)->AttachCurrentThread(directtouch_environ->minecraft_jvm, &jvm, NULL);
+    }
+    if (result != JNI_OK) {
+        DIE_JVM(env, "[DirectTouch/LogMessage] Can't get a JNIEnv\n");
+        return;
+    }
+
+    jsize message_length = (*env)->GetStringLength(env, message);
+    const jchar *message_chars = (*env)->GetStringChars(env, message, NULL);
+
+    jstring message_copy_jvm = (*jvm)->NewString(jvm, message_chars, message_length);
+
+    (*env)->ReleaseStringChars(env, message, message_chars);
+
+    (*jvm)->CallVoidMethod(jvm, directtouch_environ->object_sysout_jvm, directtouch_environ->method_println_jvm, message_copy_jvm);
+    CHECK_EXCEPTION(jvm);
 }

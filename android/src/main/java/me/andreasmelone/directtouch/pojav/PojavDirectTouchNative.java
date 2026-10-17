@@ -4,4 +4,5 @@ import java.nio.ByteBuffer;
 
 public class PojavDirectTouchNative {
     public static native void sendMessage(int size, int offset, ByteBuffer buffer);
+    public static native void logMessage(String message);
 }

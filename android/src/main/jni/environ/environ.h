@@ -20,6 +20,9 @@ struct directtouch_environ_s {
 
     jclass class_androidNative_jvm;
     jmethodID method_receiveMessage_jvm;
+
+    jobject object_sysout_jvm;
+    jmethodID method_println_jvm;
 };
 extern struct directtouch_environ_s *directtouch_environ;
 

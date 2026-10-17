@@ -6,7 +6,7 @@
  * Repository: https://github.com/AngelAuraMC/Amethyst-Android
  * Path: app_pojavlauncher/src/main/java/net/kdt/pojavlaunch/utils/TouchControllerUtils.java
  */
-package me.andreasmelone.directtouch.pojav;
+package me.andreasmelone.directtouch.pojav.touchcontroller;
 
 import static androidx.core.content.ContextCompat.checkSelfPermission;
 
@@ -16,6 +16,7 @@ import android.os.Build;
 import android.os.VibrationEffect;
 import android.os.Vibrator;
 
+import me.andreasmelone.directtouch.pojav.DirectTouchTransport;
 import top.fifthlight.touchcontroller.proxy.client.LauncherProxyClient;
 import top.fifthlight.touchcontroller.proxy.client.MessageTransport;
 import top.fifthlight.touchcontroller.proxy.client.PlatformCapability;
@@ -29,7 +30,6 @@ import android.view.View;
 import androidx.annotation.NonNull;
 import androidx.core.content.ContextCompat;
 
-import java.util.HashSet;
 import java.util.Set;
 
 public class TouchControllerUtils {

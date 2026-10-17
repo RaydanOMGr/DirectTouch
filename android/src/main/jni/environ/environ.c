@@ -2,6 +2,7 @@
 #include <assert.h>
 #include <string.h>
 #include "environ.h"
+#include <android/log.h>
 
 struct directtouch_environ_s *directtouch_environ;
 __attribute__((constructor)) void env_init() {

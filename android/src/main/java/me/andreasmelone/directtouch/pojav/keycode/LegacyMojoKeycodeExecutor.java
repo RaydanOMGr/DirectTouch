@@ -1,8 +1,8 @@
 package me.andreasmelone.directtouch.pojav.keycode;
 
-import android.util.Log;
 import android.view.KeyEvent;
 
+import me.andreasmelone.directtouch.pojav.logger.DirectTouchLog;
 import net.kdt.pojavlaunch.EfficientAndroidLWJGLKeycode;
 
 import java.lang.reflect.Field;
@@ -67,7 +67,7 @@ public class LegacyMojoKeycodeExecutor implements KeycodeExecutor {
                 );
             }
         } catch (IllegalAccessException e) {
-            Log.e(getName(), "Failed to exec key event", e);
+            DirectTouchLog.error(getName(), "Failed to exec key event", e);
         }
     }
 
@@ -84,7 +84,7 @@ public class LegacyMojoKeycodeExecutor implements KeycodeExecutor {
         try {
             sendKeyMethod.invoke(null, glfwCode, state, mods);
         } catch (IllegalAccessException | InvocationTargetException e) {
-            Log.e(getName(), "Failed to invoke sendKeyEvent", e);
+            DirectTouchLog.error(getName(), "Failed to invoke sendKeyEvent", e);
         }
     }
 
@@ -92,7 +92,7 @@ public class LegacyMojoKeycodeExecutor implements KeycodeExecutor {
         try {
             return (int) getCurrentModsMethod.invoke(null);
         } catch (IllegalAccessException | InvocationTargetException | NullPointerException e) {
-            Log.e(getName(), "Failed to invoke getCurrentMods", e);
+            DirectTouchLog.error(getName(), "Failed to invoke getCurrentMods", e);
             return 0;
         }
     }
