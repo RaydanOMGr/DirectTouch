@@ -84,7 +84,7 @@ modstitch {
     metadata {
         modId = "directtouch"
         modName = "DirectTouch"
-        modVersion = "$version+$minecraft-$constraint"
+        modVersion = "$version+tc${sc.current.version}-$constraint"
         modGroup = "me.andreasmelone"
         modAuthor = "AndreasMelone"
         modDescription = "A fast, reliable and launcher-independent proxy implementation for the TouchController mod!"
@@ -184,14 +184,6 @@ tasks.register("moveDex", Copy::class) {
 tasks.named("processResources") {
     dependsOn("moveLibs")
     dependsOn("moveDex")
-}
-
-tasks.named("jar", Jar::class) {
-    archiveVersion = "$version-tc${sc.current.version}-$constraint"
-}
-
-tasks.named("sourcesJar", Jar::class) {
-    archiveVersion = "$version-tc${sc.current.version}-$constraint"
 }
 
 dependencies {
