@@ -87,7 +87,22 @@ public class DirectTouchAndroid {
             window.setCallback(new DelegatedWindow(original) {
                 @Override
                 public boolean dispatchTouchEvent(MotionEvent motionEvent) {
-                    TouchControllerUtils.processTouchEvent(motionEvent, glSurface);
+                    int[] location = new int[2];
+                    glSurface.getLocationInWindow(location);
+
+                    MotionEvent adjustedEvent = MotionEvent.obtain(motionEvent);
+                    // accounts for the position of the view in the hierarchy, as
+                    // it does not occupy the entire activity screen and may be offset to the right or bottom,
+                    // for example due to the notch taking part of the screen
+                    // I can actually not recreate the bug
+                    adjustedEvent.offsetLocation(-location[0], -location[1]);
+
+                    try {
+                        TouchControllerUtils.processTouchEvent(adjustedEvent, glSurface);
+                    } finally {
+                        adjustedEvent.recycle();
+                    }
+
                     return super.dispatchTouchEvent(motionEvent);
                 }
             });
